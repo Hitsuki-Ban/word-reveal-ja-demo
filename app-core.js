@@ -1,6 +1,6 @@
 (function initTypewriterCore(global) {
   const DEFAULT_SETTINGS = {
-    cps: 12,
+    cps: 8,
     locale: "ja-JP",
     mode: "grapheme",
     scenario: "shrine"

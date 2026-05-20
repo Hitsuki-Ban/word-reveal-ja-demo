@@ -80,7 +80,7 @@ test("modeLabel returns localized labels", () => {
 });
 
 test("default cps is tuned for readable VN preview pacing", () => {
-  assert.equal(DEFAULT_SETTINGS.cps, 12);
+  assert.equal(DEFAULT_SETTINGS.cps, 8);
 });
 
 test("scenario samples return localized speaker and script", () => {
