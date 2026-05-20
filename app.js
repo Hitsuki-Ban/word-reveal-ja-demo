@@ -1,34 +1,46 @@
 (() => {
+  const core = window.TypewriterCore;
+
   const elements = {
+    speakerInput: document.getElementById("speaker-input"),
+    speakerName: document.getElementById("speaker-name"),
     text: document.getElementById("text"),
+    charCount: document.getElementById("char-count"),
     locale: document.getElementById("locale"),
     mode: document.getElementById("mode"),
     speed: document.getElementById("speed"),
     speedOut: document.getElementById("speed-out"),
     punctuationPause: document.getElementById("punctuation-pause"),
     softFade: document.getElementById("soft-fade"),
+    windowStyle: document.getElementById("window-style"),
+    sampleSelect: document.getElementById("sample-select"),
+    dialogueBox: document.getElementById("dialogue-box"),
     render: document.getElementById("render"),
     cursor: document.getElementById("cursor"),
     meta: document.getElementById("meta"),
     play: document.getElementById("play"),
     complete: document.getElementById("complete"),
-    sampleJa: document.getElementById("sample-ja"),
-    sampleEn: document.getElementById("sample-en"),
-    sampleZh: document.getElementById("sample-zh")
+    topMode: document.getElementById("top-mode"),
+    topSpeed: document.getElementById("top-speed"),
+    previewPanel: document.querySelector(".preview-panel"),
+    previewModeButtons: document.querySelectorAll(".preview-modes .icon-button")
   };
 
   const samples = {
-    ja: {
+    shrine: {
+      speaker: "アカリ",
       locale: "ja-JP",
-      text: "死んだと思ってた。\n\nいや、待って。答えなくていい。\n\n扉には鍵が三つある。……そのうち一つが、今、勝手に開いた。"
+      text: "月明かりが導くこの道は、\n古の願いとともに在る。\n我らの歩みが、未来を照らす光となりますように。"
     },
-    en: {
-      locale: "en-US",
-      text: "I thought you were dead.\n\nNo, wait. Don't answer that.\n\nThere are three locks on the door... and one of them just opened by itself."
+    battle: {
+      speaker: "レン",
+      locale: "ja-JP",
+      text: "来るぞ。\n合図を待て、アカリ。\n……今だ。道を切り開く。"
     },
-    zh: {
-      locale: "zh-CN",
-      text: "我以为你已经死了。\n\n不，等一下。你先别回答。\n\n门上有三把锁……其中一把，刚才自己打开了。"
+    narration: {
+      speaker: "語り",
+      locale: "ja-JP",
+      text: "夜風が鈴を鳴らした。\n誰もいないはずの社で、灯だけが静かに揺れている。"
     }
   };
 
@@ -37,91 +49,38 @@
   let visibleCount = 0;
   let isPlaying = false;
 
-  function escapeHtml(value) {
-    return value
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
+  function currentOptions() {
+    return {
+      value: elements.text.value,
+      locale: elements.locale.value,
+      mode: elements.mode.value,
+      punctuationPause: elements.punctuationPause.checked
+    };
   }
 
-  function segmentText(value, granularity) {
-    if (typeof Intl !== "undefined" && Intl.Segmenter) {
-      const segmenter = new Intl.Segmenter(elements.locale.value, { granularity });
-      return Array.from(segmenter.segment(value));
-    }
-
-    if (granularity === "word") {
-      return value
-        .split(/(\s+)/)
-        .filter(Boolean)
-        .map((segment) => ({ segment, isWordLike: /\S/.test(segment) }));
-    }
-
-    if (granularity === "sentence") {
-      const matches = value.match(/[^.!?。！？…]+[.!?。！？…]*\s*/g);
-      return (matches ?? [value])
-        .filter(Boolean)
-        .map((segment) => ({ segment, isWordLike: true }));
-    }
-
-    return Array.from(value).map((segment) => ({ segment, isWordLike: /\S/.test(segment) }));
+  function rebuildTokens() {
+    tokens = core.makeTokens(currentOptions());
+    visibleCount = elements.mode.value === "instant" ? tokens.length : 0;
   }
 
-  function pauseFor(value) {
-    if (!elements.punctuationPause.checked) {
-      return 0;
-    }
+  function updateChrome() {
+    const speaker = elements.speakerInput.value.trim() || "話者";
+    const count = elements.text.value.length;
+    const cps = Number(elements.speed.value);
+    const duration = core.estimateDuration(tokens, cps, 180);
 
-    const trimmed = value.trim();
-    if (/(\.\.\.|…)$/.test(trimmed)) return 360;
-    if (/[。.!?！？]$/.test(trimmed)) return 240;
-    if (/[，,、;；:]$/.test(trimmed)) return 120;
-    if (/[—–-]$/.test(trimmed)) return 180;
-    if (/\n\s*\n$/.test(value)) return 260;
-    return 0;
-  }
+    elements.speakerName.textContent = speaker;
+    elements.charCount.textContent = `${count} / 500`;
+    elements.speedOut.textContent = `${cps} CPS`;
+    elements.topMode.textContent = core.modeLabel(elements.mode.value);
+    elements.topSpeed.textContent = `${cps} CPS`;
+    elements.dialogueBox.className = `dialogue-box ${elements.windowStyle.value}`;
 
-  function makeTokens(value) {
-    if (elements.mode.value === "instant") {
-      return [{ text: value, pause: 0 }];
-    }
-
-    if (elements.mode.value === "grapheme") {
-      return segmentText(value, "grapheme").map((item) => ({
-        text: item.segment,
-        pause: pauseFor(item.segment)
-      }));
-    }
-
-    if (elements.mode.value === "sentence") {
-      return segmentText(value, "sentence").map((item) => ({
-        text: item.segment,
-        pause: pauseFor(item.segment) + 180
-      }));
-    }
-
-    const parts = segmentText(value, "word");
-    const grouped = [];
-    let current = "";
-    let hasWord = false;
-
-    parts.forEach((part) => {
-      if (part.isWordLike) {
-        if (hasWord && current) {
-          grouped.push({ text: current, pause: pauseFor(current) });
-        }
-        current = part.segment;
-        hasWord = true;
-      } else {
-        current += part.segment;
-      }
-    });
-
-    if (current) {
-      grouped.push({ text: current, pause: pauseFor(current) });
-    }
-
-    return grouped.length ? grouped : [{ text: value, pause: 0 }];
+    elements.meta.innerHTML = `
+      <div><dt>状態</dt><dd>${isPlaying ? "再生中" : visibleCount >= tokens.length && tokens.length ? "完了" : "待機"}</dd></div>
+      <div><dt>表示</dt><dd>${visibleCount} / ${tokens.length}</dd></div>
+      <div><dt>目安</dt><dd>${(duration / 1000).toFixed(2)} 秒</dd></div>
+    `;
   }
 
   function renderTokens() {
@@ -129,32 +88,24 @@
     elements.render.innerHTML = tokens
       .map((token, index) => {
         const classes = index < visibleCount ? `token visible${fadeClass}` : `token${fadeClass}`;
-        return `<span class="${classes}">${escapeHtml(token.text)}</span>`;
+        return `<span class="${classes}" data-kind="${token.kind}">${core.escapeHtml(token.text)}</span>`;
       })
       .join("");
 
     elements.cursor.style.visibility = visibleCount >= tokens.length ? "hidden" : "visible";
-    elements.meta.innerHTML = `
-      <div><dt>単位</dt><dd>${tokens.length}</dd></div>
-      <div><dt>表示済み</dt><dd>${visibleCount}</dd></div>
-      <div><dt>モード</dt><dd>${modeLabel(elements.mode.value)}</dd></div>
-    `;
-  }
-
-  function modeLabel(value) {
-    const labels = {
-      word: "単語",
-      grapheme: "文字",
-      sentence: "文",
-      instant: "即時"
-    };
-    return labels[value] ?? value;
+    updateChrome();
   }
 
   function stop() {
     isPlaying = false;
     clearTimeout(timer);
     timer = null;
+  }
+
+  function resetPreview() {
+    stop();
+    rebuildTokens();
+    renderTokens();
   }
 
   function complete() {
@@ -177,46 +128,64 @@
     visibleCount += 1;
     renderTokens();
 
-    const baseDelay = 1000 / Number(elements.speed.value);
+    const baseDelay = 1000 / Math.max(Number(elements.speed.value), 1);
     const extraDelay = tokens[Math.max(0, visibleCount - 1)]?.pause ?? 0;
     timer = setTimeout(tick, baseDelay + extraDelay);
   }
 
   function play() {
     stop();
-    tokens = makeTokens(elements.text.value);
-    visibleCount = elements.mode.value === "instant" ? tokens.length : 0;
+    rebuildTokens();
     renderTokens();
 
-    if (elements.mode.value !== "instant") {
-      isPlaying = true;
-      timer = setTimeout(tick, 180);
+    if (elements.mode.value === "instant" || tokens.length === 0) {
+      return;
     }
+
+    isPlaying = true;
+    updateChrome();
+    tick();
   }
 
-  function updateSpeed() {
-    elements.speedOut.textContent = `${Number(elements.speed.value).toFixed(1)}/秒`;
-  }
+  function loadSample(name) {
+    const sample = samples[name];
+    if (!sample) return;
 
-  function loadSample(sample) {
-    elements.text.value = sample.text;
+    elements.speakerInput.value = sample.speaker;
     elements.locale.value = sample.locale;
-    play();
+    elements.text.value = sample.text;
+    resetPreview();
   }
 
   elements.play.addEventListener("click", play);
   elements.complete.addEventListener("click", complete);
-  elements.sampleJa.addEventListener("click", () => loadSample(samples.ja));
-  elements.sampleEn.addEventListener("click", () => loadSample(samples.en));
-  elements.sampleZh.addEventListener("click", () => loadSample(samples.zh));
-  elements.speed.addEventListener("input", updateSpeed);
+
+  elements.speakerInput.addEventListener("input", updateChrome);
+  elements.text.addEventListener("input", resetPreview);
+  elements.speed.addEventListener("input", () => {
+    updateChrome();
+    renderTokens();
+  });
 
   [
     elements.locale,
     elements.mode,
     elements.punctuationPause,
-    elements.softFade
-  ].forEach((element) => element.addEventListener("change", play));
+    elements.softFade,
+    elements.windowStyle
+  ].forEach((element) => element.addEventListener("change", resetPreview));
+
+  elements.sampleSelect.addEventListener("change", () => {
+    loadSample(elements.sampleSelect.value);
+  });
+
+  elements.previewModeButtons.forEach((button, index) => {
+    button.addEventListener("click", () => {
+      elements.previewModeButtons.forEach((item) => item.classList.remove("active"));
+      button.classList.add("active");
+      elements.previewPanel.classList.toggle("mobile-preview", index === 1);
+    });
+  });
 
   document.addEventListener("keydown", (event) => {
     if (event.code !== "Space") {
@@ -236,6 +205,5 @@
     }
   });
 
-  updateSpeed();
   play();
 })();
