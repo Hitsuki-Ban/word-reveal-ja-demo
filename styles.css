@@ -560,28 +560,105 @@ summary::after {
 
 @media (max-width: 680px) {
   .app-shell {
-    width: min(100% - 18px, 520px);
-    padding: 9px 0;
+    width: min(100% - 14px, 520px);
+    padding: 7px 0;
   }
 
   .topbar {
     grid-template-columns: auto minmax(0, 1fr);
+    gap: 9px;
+    min-height: 58px;
+    margin-bottom: 8px;
+    padding: 9px 11px;
+  }
+
+  .brand-mark {
+    width: 32px;
+    height: 32px;
+    font-size: 0.95rem;
+  }
+
+  h1 {
+    font-size: 1.45rem;
   }
 
   .topbar-status {
     grid-column: 1 / -1;
+    gap: 6px;
+  }
+
+  .topbar-status span,
+  .meta div {
+    padding: 4px 9px;
+    font-size: 0.76rem;
   }
 
   .editor-panel {
-    padding: 13px;
+    padding: 11px;
   }
 
   .field {
-    margin-top: 13px;
+    gap: 5px;
+    margin-top: 10px;
+  }
+
+  .field > span:first-child,
+  .script-field > span:first-child {
+    font-size: 0.8rem;
+  }
+
+  .basic-grid {
+    gap: 8px;
+  }
+
+  input[type="text"],
+  select {
+    min-height: 38px;
+    padding: 7px 10px;
   }
 
   textarea {
-    min-height: 128px;
+    min-height: 104px;
+    padding: 10px 11px;
+    line-height: 1.6;
+  }
+
+  .speed-row {
+    grid-template-columns: minmax(0, 1fr) 58px;
+    gap: 8px;
+  }
+
+  output {
+    font-size: 0.82rem;
+  }
+
+  .primary-actions {
+    position: sticky;
+    bottom: 8px;
+    z-index: 10;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 6px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgba(11, 17, 24, 0.96);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.34);
+  }
+
+  .button {
+    min-height: 40px;
+    padding: 8px 10px;
+    font-size: 0.92rem;
+  }
+
+  .advanced {
+    margin-top: 12px;
+  }
+
+  summary {
+    min-height: 38px;
+    padding: 0 11px;
   }
 
   .preview-panel {
@@ -589,8 +666,18 @@ summary::after {
     padding: 10px;
   }
 
+  .preview-toolbar {
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .icon-button {
+    width: 38px;
+    min-height: 38px;
+  }
+
   .stage {
-    min-height: 430px;
+    min-height: 420px;
   }
 
   .dialogue-box {
@@ -598,7 +685,7 @@ summary::after {
     bottom: 10px;
     left: 10px;
     grid-template-columns: minmax(0, 1fr);
-    min-height: 176px;
+    min-height: 150px;
   }
 
   .portrait {
@@ -606,22 +693,31 @@ summary::after {
   }
 
   .dialogue-content {
-    padding: 16px 34px 16px 18px;
+    padding: 13px 30px 14px 15px;
   }
 
   .nameplate {
-    min-width: 112px;
-    margin-bottom: 10px;
-    font-size: 1.08rem;
+    min-width: 96px;
+    margin-bottom: 7px;
+    padding: 5px 12px;
+    font-size: 0.98rem;
   }
 
   .revealed-text {
-    font-size: 1rem;
-    line-height: 1.62;
+    min-height: 60px;
+    font-size: 0.94rem;
+    line-height: 1.58;
   }
 
-  .advanced-grid,
-  .primary-actions {
+  .advance-marker {
+    right: 19px;
+    bottom: 17px;
+    border-right-width: 10px;
+    border-left-width: 10px;
+    border-top-width: 13px;
+  }
+
+  .advanced-grid {
     grid-template-columns: 1fr;
   }
 }

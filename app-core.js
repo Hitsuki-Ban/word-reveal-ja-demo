@@ -177,6 +177,16 @@
     return Math.round(base + pauseTotal + (Number(initialDelay) || 0));
   }
 
+  function renderTokenHtml(tokens, visibleCount, softFade) {
+    const count = Math.max(Number(visibleCount) || 0, 0);
+    const fadeClass = softFade ? "" : " no-fade";
+
+    return tokens
+      .slice(0, count)
+      .map((token) => `<span class="token visible${fadeClass}" data-kind="${token.kind}">${escapeHtml(token.text)}</span>`)
+      .join("");
+  }
+
   function modeLabel(value) {
     const labels = {
       grapheme: "文字",
@@ -196,6 +206,7 @@
     pauseFor,
     makeTokens,
     estimateDuration,
+    renderTokenHtml,
     modeLabel
   };
 

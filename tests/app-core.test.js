@@ -7,7 +7,8 @@ const {
   getScenarioSample,
   makeTokens,
   modeLabel,
-  pauseFor
+  pauseFor,
+  renderTokenHtml
 } = require("../app-core");
 
 test("escapeHtml keeps user script text inert", () => {
@@ -57,6 +58,20 @@ test("duration includes cps, initial delay, and punctuation pauses", () => {
   });
 
   assert.equal(estimateDuration(tokens, 10, 100), 640);
+});
+
+test("renderTokenHtml only emits visible tokens so cursor follows progress", () => {
+  const tokens = [
+    { text: "月", pause: 0, kind: "text" },
+    { text: "<", pause: 0, kind: "text" },
+    { text: "明", pause: 0, kind: "text" }
+  ];
+
+  const html = renderTokenHtml(tokens, 1, true);
+
+  assert.match(html, />月<\/span>/);
+  assert.doesNotMatch(html, /&lt;/);
+  assert.doesNotMatch(html, /明/);
 });
 
 test("modeLabel returns localized labels", () => {

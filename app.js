@@ -66,14 +66,7 @@
   }
 
   function renderTokens() {
-    const fadeClass = elements.softFade.checked ? "" : " no-fade";
-    elements.render.innerHTML = tokens
-      .map((token, index) => {
-        const classes = index < visibleCount ? `token visible${fadeClass}` : `token${fadeClass}`;
-        return `<span class="${classes}" data-kind="${token.kind}">${core.escapeHtml(token.text)}</span>`;
-      })
-      .join("");
-
+    elements.render.innerHTML = core.renderTokenHtml(tokens, visibleCount, elements.softFade.checked);
     elements.cursor.style.visibility = visibleCount >= tokens.length ? "hidden" : "visible";
     updateChrome();
   }
