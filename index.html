@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="日本語RPGとビジュアルノベル向けのタイプライター演出プレビュー。">
   <title>Typewriter Preview</title>
-  <link rel="stylesheet" href="styles.css?v=20260520-rpg2">
+  <link rel="stylesheet" href="styles.css?v=20260520-rpg3">
 </head>
 <body>
   <main class="app-shell">
@@ -31,6 +31,27 @@
           <input id="speaker-input" type="text" maxlength="18" value="アカリ" autocomplete="off">
         </label>
 
+        <div class="basic-grid">
+          <label class="field">
+            <span>言語</span>
+            <select id="locale">
+              <option value="ja-JP" selected>日本語</option>
+              <option value="en-US">English</option>
+              <option value="zh-CN">简体中文</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>表示単位</span>
+            <select id="mode">
+              <option value="grapheme" selected>文字</option>
+              <option value="word">単語</option>
+              <option value="sentence">文</option>
+              <option value="instant">即時</option>
+            </select>
+          </label>
+        </div>
+
         <label class="field script-field">
           <span>本文</span>
           <textarea id="text" maxlength="500">月明かりが導くこの道は、
@@ -42,8 +63,8 @@
         <label class="field speed-field">
           <span>速度</span>
           <span class="speed-row">
-            <input id="speed" type="range" min="2" max="40" step="1" value="18" aria-describedby="speed-out">
-            <output id="speed-out" for="speed">18 CPS</output>
+            <input id="speed" type="range" min="2" max="40" step="1" value="12" aria-describedby="speed-out">
+            <output id="speed-out" for="speed">12 CPS</output>
           </span>
         </label>
 
@@ -62,26 +83,6 @@
           <summary>詳細設定</summary>
           <div class="advanced-grid">
             <label class="field">
-              <span>表示単位</span>
-              <select id="mode">
-                <option value="grapheme" selected>文字</option>
-                <option value="word">単語</option>
-                <option value="sentence">文</option>
-                <option value="instant">即時</option>
-              </select>
-            </label>
-
-            <label class="field">
-              <span>分割言語</span>
-              <select id="locale">
-                <option value="ja-JP" selected>日本語</option>
-                <option value="en-US">英語</option>
-                <option value="zh-CN">中国語</option>
-                <option value="th-TH">タイ語</option>
-              </select>
-            </label>
-
-            <label class="field">
               <span>ウィンドウ</span>
               <select id="window-style">
                 <option value="classic" selected>クラシック</option>
@@ -91,7 +92,7 @@
             </label>
 
             <label class="field">
-              <span>サンプル</span>
+              <span>シーン</span>
               <select id="sample-select">
                 <option value="shrine" selected>参道</option>
                 <option value="battle">戦闘</option>
@@ -129,7 +130,7 @@
 
           <article class="dialogue-box classic" id="dialogue-box" aria-live="polite">
             <div class="portrait" aria-hidden="true">
-              <img src="assets/portrait-placeholder.png?v=20260520-rpg2" alt="">
+              <img src="assets/portrait-placeholder.png?v=20260520-rpg3" alt="">
             </div>
             <div class="dialogue-content">
               <div class="nameplate" id="speaker-name">アカリ</div>
@@ -144,7 +145,7 @@
     </div>
   </main>
 
-  <script src="app-core.js?v=20260520-rpg2"></script>
-  <script src="app.js?v=20260520-rpg2" defer></script>
+  <script src="app-core.js?v=20260520-rpg3"></script>
+  <script src="app.js?v=20260520-rpg3" defer></script>
 </body>
 </html>

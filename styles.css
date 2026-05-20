@@ -144,6 +144,12 @@ h1 {
   margin-top: 18px;
 }
 
+.basic-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
 .field > span:first-child,
 .script-field > span:first-child {
   color: var(--gold-soft);
@@ -382,8 +388,8 @@ summary::after {
   bottom: 24px;
   left: 24px;
   display: grid;
-  grid-template-columns: 148px minmax(0, 1fr);
-  min-height: 172px;
+  grid-template-columns: 132px minmax(0, 1fr);
+  min-height: 156px;
   border: 2px solid rgba(126, 91, 44, 0.74);
   border-radius: 6px;
   background: var(--paper);
@@ -427,30 +433,29 @@ summary::after {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   min-width: 0;
-  padding: 22px 54px 22px 28px;
+  padding: 18px 48px 18px 24px;
 }
 
 .nameplate {
   justify-self: start;
-  min-width: 142px;
-  margin-top: -43px;
-  margin-bottom: 14px;
-  padding: 8px 20px;
+  min-width: 112px;
+  margin-bottom: 10px;
+  padding: 6px 16px;
   border: 2px solid rgba(126, 91, 44, 0.82);
   border-radius: 4px;
   background: #090f16;
   color: var(--gold-soft);
   font-family: Georgia, "Yu Mincho", "Hiragino Mincho ProN", serif;
-  font-size: clamp(1.25rem, 2.2vw, 1.85rem);
+  font-size: clamp(1.08rem, 1.45vw, 1.38rem);
   font-weight: 700;
   text-align: center;
 }
 
 .revealed-text {
-  min-height: 74px;
+  min-height: 68px;
   color: inherit;
   font-family: "Yu Mincho", "Hiragino Mincho ProN", "Yu Gothic UI", serif;
-  font-size: clamp(1.25rem, 2.15vw, 2rem);
+  font-size: clamp(1.05rem, 1.45vw, 1.48rem);
   font-weight: 700;
   line-height: 1.7;
   text-align: left;
@@ -601,18 +606,18 @@ summary::after {
   }
 
   .dialogue-content {
-    padding: 22px 38px 22px 18px;
+    padding: 16px 34px 16px 18px;
   }
 
   .nameplate {
     min-width: 112px;
-    margin-top: -40px;
-    font-size: 1.24rem;
+    margin-bottom: 10px;
+    font-size: 1.08rem;
   }
 
   .revealed-text {
-    font-size: 1.18rem;
-    line-height: 1.72;
+    font-size: 1rem;
+    line-height: 1.62;
   }
 
   .advanced-grid,

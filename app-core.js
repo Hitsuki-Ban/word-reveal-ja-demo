@@ -1,4 +1,61 @@
 (function initTypewriterCore(global) {
+  const DEFAULT_SETTINGS = {
+    cps: 12,
+    locale: "ja-JP",
+    mode: "grapheme",
+    scenario: "shrine"
+  };
+
+  const SCENARIO_SAMPLES = {
+    shrine: {
+      "ja-JP": {
+        speaker: "アカリ",
+        text: "月明かりが導くこの道は、\n古の願いとともに在る。\n我らの歩みが、未来を照らす光となりますように。"
+      },
+      "en-US": {
+        speaker: "Akari",
+        text: "This path of moonlight still carries an ancient wish.\nMay our steps become a light for tomorrow."
+      },
+      "zh-CN": {
+        speaker: "明里",
+        text: "月光指引的这条路，\n承载着古老的愿望。\n愿我们的脚步，成为照亮未来的光。"
+      }
+    },
+    battle: {
+      "ja-JP": {
+        speaker: "レン",
+        text: "来るぞ。\n合図を待て、アカリ。\n……今だ。道を切り開く。"
+      },
+      "en-US": {
+        speaker: "Ren",
+        text: "They're coming.\nWait for my signal, Akari.\n...Now. Cut a path through."
+      },
+      "zh-CN": {
+        speaker: "莲",
+        text: "他们来了。\n明里，等我的信号。\n……就是现在。打开突破口。"
+      }
+    },
+    narration: {
+      "ja-JP": {
+        speaker: "語り",
+        text: "夜風が鈴を鳴らした。\n誰もいないはずの社で、灯だけが静かに揺れている。"
+      },
+      "en-US": {
+        speaker: "Narrator",
+        text: "The night wind stirred the bells.\nIn the shrine where no one should be, only the lamps moved quietly."
+      },
+      "zh-CN": {
+        speaker: "旁白",
+        text: "夜风摇响了铃。\n本该空无一人的神社里，只有灯火静静晃动。"
+      }
+    }
+  };
+
+  function getScenarioSample(scenario, locale) {
+    const samples = SCENARIO_SAMPLES[scenario] ?? SCENARIO_SAMPLES[DEFAULT_SETTINGS.scenario];
+    return samples[locale] ?? samples[DEFAULT_SETTINGS.locale];
+  }
+
   function escapeHtml(value) {
     return String(value)
       .replace(/&/g, "&amp;")
@@ -131,7 +188,10 @@
   }
 
   const api = {
+    DEFAULT_SETTINGS,
+    SCENARIO_SAMPLES,
     escapeHtml,
+    getScenarioSample,
     segmentText,
     pauseFor,
     makeTokens,

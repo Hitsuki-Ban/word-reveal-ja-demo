@@ -1,8 +1,10 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const {
+  DEFAULT_SETTINGS,
   escapeHtml,
   estimateDuration,
+  getScenarioSample,
   makeTokens,
   modeLabel,
   pauseFor
@@ -60,4 +62,18 @@ test("duration includes cps, initial delay, and punctuation pauses", () => {
 test("modeLabel returns localized labels", () => {
   assert.equal(modeLabel("grapheme"), "文字");
   assert.equal(modeLabel("instant"), "即時");
+});
+
+test("default cps is tuned for readable VN preview pacing", () => {
+  assert.equal(DEFAULT_SETTINGS.cps, 12);
+});
+
+test("scenario samples return localized speaker and script", () => {
+  const english = getScenarioSample("shrine", "en-US");
+  const chinese = getScenarioSample("battle", "zh-CN");
+
+  assert.equal(english.speaker, "Akari");
+  assert.match(english.text, /moonlight/i);
+  assert.equal(chinese.speaker, "莲");
+  assert.match(chinese.text, /等我的信号/);
 });

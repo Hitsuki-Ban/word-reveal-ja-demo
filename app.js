@@ -26,24 +26,6 @@
     previewModeButtons: document.querySelectorAll(".preview-modes .icon-button")
   };
 
-  const samples = {
-    shrine: {
-      speaker: "アカリ",
-      locale: "ja-JP",
-      text: "月明かりが導くこの道は、\n古の願いとともに在る。\n我らの歩みが、未来を照らす光となりますように。"
-    },
-    battle: {
-      speaker: "レン",
-      locale: "ja-JP",
-      text: "来るぞ。\n合図を待て、アカリ。\n……今だ。道を切り開く。"
-    },
-    narration: {
-      speaker: "語り",
-      locale: "ja-JP",
-      text: "夜風が鈴を鳴らした。\n誰もいないはずの社で、灯だけが静かに揺れている。"
-    }
-  };
-
   let timer = null;
   let tokens = [];
   let visibleCount = 0;
@@ -148,11 +130,9 @@
   }
 
   function loadSample(name) {
-    const sample = samples[name];
-    if (!sample) return;
+    const sample = core.getScenarioSample(name, elements.locale.value);
 
     elements.speakerInput.value = sample.speaker;
-    elements.locale.value = sample.locale;
     elements.text.value = sample.text;
     resetPreview();
   }
@@ -168,12 +148,15 @@
   });
 
   [
-    elements.locale,
     elements.mode,
     elements.punctuationPause,
     elements.softFade,
     elements.windowStyle
   ].forEach((element) => element.addEventListener("change", resetPreview));
+
+  elements.locale.addEventListener("change", () => {
+    loadSample(elements.sampleSelect.value);
+  });
 
   elements.sampleSelect.addEventListener("change", () => {
     loadSample(elements.sampleSelect.value);
