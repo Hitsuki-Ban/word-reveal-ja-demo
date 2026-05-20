@@ -22,6 +22,14 @@
   --paper-line: #8a6476;
   --ink: #1b1519;
   --ink-muted: #51424b;
+  --dialogue-bg: #111014;
+  --dialogue-bg-soft: #17131a;
+  --dialogue-border: #7b6470;
+  --dialogue-border-strong: #a98294;
+  --dialogue-text: #eadfe5;
+  --dialogue-name-bg: #2b1420;
+  --dialogue-name-text: #e6c8d5;
+  --dialogue-portrait-bg: #17131a;
   --gold: var(--accent);
   --gold-soft: var(--accent-soft);
   --teal: var(--accent);
@@ -422,16 +430,27 @@ summary::after {
   display: grid;
   grid-template-columns: 132px minmax(0, 1fr);
   min-height: 156px;
-  border: 2px solid var(--paper-line);
+  border: 1px solid var(--dialogue-border);
   border-radius: 6px;
-  background: var(--paper);
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.72), 0 18px 38px rgba(0, 0, 0, 0.36), inset 0 0 0 1px rgba(255, 247, 251, 0.46);
-  color: var(--ink);
+  background: var(--dialogue-bg);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.74), 0 18px 38px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.06), inset 0 0 0 1px rgba(201, 139, 165, 0.12);
+  color: var(--dialogue-text);
+}
+
+.dialogue-box::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  left: 10px;
+  height: 1px;
+  background: rgba(201, 139, 165, 0.2);
+  pointer-events: none;
 }
 
 .dialogue-box.glass {
-  border-color: var(--line-strong);
-  background: rgba(18, 13, 20, 0.82);
+  border-color: var(--dialogue-border-strong);
+  background: rgba(17, 16, 20, 0.82);
   color: var(--text);
 }
 
@@ -447,8 +466,8 @@ summary::after {
 .portrait {
   position: relative;
   margin: -30px 0 0 -2px;
-  border-right: 2px solid var(--paper-line);
-  background: #d8ccd3;
+  border-right: 1px solid var(--dialogue-border);
+  background: var(--dialogue-portrait-bg);
   overflow: hidden;
 }
 
@@ -458,7 +477,8 @@ summary::after {
   height: 100%;
   object-fit: cover;
   object-position: center 32%;
-  opacity: 0.88;
+  opacity: 0.72;
+  filter: grayscale(0.34) sepia(0.16) hue-rotate(285deg) saturate(0.52) brightness(0.78) contrast(1.05);
 }
 
 .dialogue-content {
@@ -473,10 +493,10 @@ summary::after {
   min-width: 112px;
   margin-bottom: 10px;
   padding: 6px 16px;
-  border: 2px solid var(--paper-line);
+  border: 1px solid var(--dialogue-border-strong);
   border-radius: 4px;
-  background: #100a10;
-  color: var(--accent);
+  background: var(--dialogue-name-bg);
+  color: var(--dialogue-name-text);
   font-family: Georgia, "Yu Mincho", "Hiragino Mincho ProN", serif;
   font-size: clamp(1.08rem, 1.45vw, 1.38rem);
   font-weight: 700;
@@ -528,6 +548,8 @@ summary::after {
   position: absolute;
   right: 28px;
   bottom: 22px;
+  color: var(--dialogue-name-text);
+  opacity: 0.88;
   width: 0;
   height: 0;
   border-right: 13px solid transparent;
